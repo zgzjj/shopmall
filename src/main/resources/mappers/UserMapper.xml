@@ -169,11 +169,30 @@
         FROM shop_user
         WHERE email=#{email}
     </select>
+    <select id="selectQuestionByUsername" resultType="string" parameterType="string">
+        SELECT
+        question
+        FROM shop_user
+        WHERE username=#{username}
+    </select>
+    <select id="checkAnswer" resultType="int" parameterType="map">
+        SELECT
+        COUNT (1)
+        FROM shop_user
+        WHERE username=#{username}
+        AND question=#{question}
+        AND answer=#{answer}
+    </select>
+    <update id="updatePasswordByUsername" parameterType="map">
+        UPDATE shop_user
+        SET password=#{passwordNew},update_time=now()
+        WHERE username=#{username}
+    </update>
     <select id="checkPassword" resultType="int" parameterType="map">
     SELECT
     count(1)
     FROM shop_user
-    WHEREpassword=#{password}
+    WHERE password=#{password}
     AND  id=#{userId}
   </select>
 </mapper>
