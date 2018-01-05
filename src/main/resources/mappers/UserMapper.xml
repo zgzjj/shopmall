@@ -163,9 +163,9 @@
         WHERE username=#{username}
         AND password=#{password}
     </select>
-    <select id="checkEmail" resultType="BaseResultMap" parameterType="map">
+    <select id="checkEmail" resultType="int" parameterType="map">
         SELECT
-        <include refid="Base_Column_List"/>
+        COUNT (1)
         FROM shop_user
         WHERE email=#{email}
     </select>
@@ -195,4 +195,11 @@
     WHERE password=#{password}
     AND  id=#{userId}
   </select>
+    <select id="checkEmailByUserId" resultType="int" parameterType="map">
+        SELECT
+        COUNT (1)
+        FROM shop_user
+        WHERE email=#{email}
+        AND id !=#{userId}
+    </select>
 </mapper>
