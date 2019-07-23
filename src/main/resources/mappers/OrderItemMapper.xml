@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.coolshop.dao.OrderItemMapper" >
-  <resultMap id="BaseResultMap" type="com.coolshop.pojo.OrderItem" >
+<mapper namespace="com.mmall.dao.OrderItemMapper" >
+  <resultMap id="BaseResultMap" type="com.mmall.po.OrderItem" >
     <constructor >
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
@@ -23,25 +23,25 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from shop_order_item
+    from mmall_order_item
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from shop_order_item
+    delete from mmall_order_item
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.coolshop.pojo.OrderItem" >
-    insert into shop_order_item (id, user_id, order_no, 
+  <insert id="insert" parameterType="com.mmall.po.OrderItem" >
+    insert into mmall_order_item (id, user_id, order_no, 
       product_id, product_name, product_image, 
       current_unit_price, quantity, total_price, 
       create_time, update_time)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{orderNo,jdbcType=BIGINT}, 
       #{productId,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, #{productImage,jdbcType=VARCHAR}, 
       #{currentUnitPrice,jdbcType=DECIMAL}, #{quantity,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      now(),  now())
   </insert>
-  <insert id="insertSelective" parameterType="com.coolshop.pojo.OrderItem" >
-    insert into shop_order_item
+  <insert id="insertSelective" parameterType="com.mmall.po.OrderItem" >
+    insert into mmall_order_item
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -106,15 +106,15 @@
         #{totalPrice,jdbcType=DECIMAL},
       </if>
       <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
+        now(),
       </if>
       <if test="updateTime != null" >
-        #{updateTime,jdbcType=TIMESTAMP},
+        now(),
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.coolshop.pojo.OrderItem" >
-    update shop_order_item
+  <update id="updateByPrimaryKeySelective" parameterType="com.mmall.po.OrderItem" >
+    update mmall_order_item
     <set >
       <if test="userId != null" >
         user_id = #{userId,jdbcType=INTEGER},
@@ -144,13 +144,13 @@
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        update_time =  now(),
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.coolshop.pojo.OrderItem" >
-    update shop_order_item
+  <update id="updateByPrimaryKey" parameterType="com.mmall.po.OrderItem" >
+    update mmall_order_item
     set user_id = #{userId,jdbcType=INTEGER},
       order_no = #{orderNo,jdbcType=BIGINT},
       product_id = #{productId,jdbcType=INTEGER},
@@ -160,7 +160,31 @@
       quantity = #{quantity,jdbcType=INTEGER},
       total_price = #{totalPrice,jdbcType=DECIMAL},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time =  now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="getByOrderNoAndUserId" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List" />
+    from mmall_order_item
+    where order_no = #{orderNo} and user_id = #{userId}
+  </select>
+  <insert id="batchInsert" parameterType="list">
+    insert into mmall_order_item (id, order_no,user_id
+      product_id, product_name, product_image,
+      current_unit_price, quantity, total_price,
+      create_time, update_time)
+    values
+    <foreach collection="orderItemList" index="index" item="item" separator=",">
+      (
+      #{item.id},#{item.orderNo},#{item.userId},#{item.productId},#{item.productName},#{item.productImage},#{item.currentUnitPrice},#{item.quantity},#{item.totalPrice}, now(),  now()
+      )
+    </foreach>
+  </insert>
+  <select id="getByOrderNo" resultMap="BaseResultMap" parameterType="long">
+    select
+    <include refid="Base_Column_List" />
+    from mmall_order_item
+    where order_no = #{orderNo}
+  </select>
 </mapper>
